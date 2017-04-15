@@ -1,6 +1,6 @@
-require_relative 'simple_token'
+require_relative '../tokens/token'
 
-class TextToken < SimpleToken
+class TextScanner < SimpleScanner
   def self.from_string(plain_markdown)
     length = 0
     char   = plain_markdown[length]
@@ -11,6 +11,6 @@ class TextToken < SimpleToken
       char    = plain_markdown[length]
     end
 
-    TextToken.new(type: 'TEXT', value: text)
+    Token.new(type: 'TEXT', value: text)
   end
 end

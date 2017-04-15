@@ -1,6 +1,6 @@
 require 'active_support/all'
-require_relative 'tokens/simple_token'
-require_relative 'tokens/text_token'
+require_relative 'scanners/simple_scanner'
+require_relative 'scanners/text_scanner'
 
 # A tokenizer, the purpose of this class is to transform a markdown string
 # into a list of "tokens". In this case, each token has a type and a value.
@@ -11,8 +11,8 @@ require_relative 'tokens/text_token'
 #
 class Tokenizer
   TOKEN_SCANNERS = [
-    SimpleToken, # Recognizes simple one-char tokens like `_` and `*`
-    TextToken    # Recognizes everything but a simple token
+    SimpleScanner, # Recognizes simple one-char tokens like `_` and `*`
+    TextScanner    # Recognizes everything but a simple token
   ].freeze
 
   def initialize; end
