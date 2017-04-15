@@ -1,49 +1,36 @@
-require 'active_support'
-require 'active_support/core_ext/object/blank'
+require 'active_support/all'
+require_relative 'tokens/simple_token'
+require_relative 'tokens/text_token'
 
 # A tokenizer, the purpose of this class is to transform a markdown string
 # into a list of "tokens". In this case, each token has a type and a value.
 #
 # Example:
-#   "_Hi!_" => [{type: UNDERSCORE, value: '_'}, {type: TEXT, value: 'Hi!'}, {type: UNDERSCORE, value: '_'}]
+#   "_Hi!_" => [{type: UNDERSCORE, value: '_'}, {type: TEXT, value: 'Hi!'},
+#               {type: UNDERSCORE, value: '_'}]
 #
 class Tokenizer
-  TOKENS = {
-    '_'  => 'UNDERSCORE',
-    '*'  => 'TIMES',
-    '('  => 'POPEN',
-    ')'  => 'PCLOSE',
-    '['  => 'BOPEN',
-    ']'  => 'BCLOSE',
-    "\n" => 'NEWLINE'
-  }.freeze
-  DEFAULT_TOKEN_TYPE = 'TEXT'.freeze
+  TOKEN_SCANNERS = [
+    SimpleToken, # Recognizes simple one-char tokens like `_` and `*`
+    TextToken    # Recognizes everything but a simple token
+  ].freeze
 
-  def initialize
-  end
+  def initialize; end
 
   def tokenize(plain_markdown)
-    text_so_far = ''
-    result = []
-
-    plain_markdown.each_char do |char|
-      token_type = TOKENS.fetch(char) { DEFAULT_TOKEN_TYPE }
-      if token_type == DEFAULT_TOKEN_TYPE
-        text_so_far += char
-      else
-        if text_so_far.present?
-          result += [Token.new(type: DEFAULT_TOKEN_TYPE, value: text_so_far)]
-          text_so_far = ''
-        end
-        result += [Token.new(type: token_type, value: char)]
-      end
+    if plain_markdown.blank?
+      []
+    else
+      token = scan_token(plain_markdown)
+      [token] + tokenize(plain_markdown[token.length..-1])
     end
+  end
 
-    if text_so_far.present?
-      result += [Token.new(type: DEFAULT_TOKEN_TYPE, value: text_so_far)]
-      text_so_far = ''
+  def scan_token(plain_markdown)
+    TOKEN_SCANNERS.each do |scanner|
+      token = scanner.from_string(plain_markdown)
+      return token unless token.null?
     end
-
-    result
+    raise "The scanners could not match the given input: #{plain_markdown}"
   end
 end
