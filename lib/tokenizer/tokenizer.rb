@@ -15,8 +15,6 @@ class Tokenizer
     TextScanner    # Recognizes everything but a simple token
   ].freeze
 
-  def initialize; end
-
   def tokenize(plain_markdown)
     if plain_markdown.blank?
       []
