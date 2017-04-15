@@ -1,0 +1,2 @@
+class SimpleMarkdown
+end
