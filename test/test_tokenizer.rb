@@ -25,4 +25,12 @@ class TestTokenizer < Minitest::Test
     assert_equal tokens.third.type, 'UNDERSCORE'
     assert_equal tokens.third.value, '_'
   end
+
+  def test_paragraph
+    tokens = @tokenizer.tokenize("Hello, World!
+This is a _quite_ **long** text for what we've been testing so far.
+
+And this is another para.")
+    assert_equal true, true
+  end
 end

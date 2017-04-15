@@ -19,11 +19,8 @@ class SimpleScanner
 
   def self.from_string(plain_markdown)
     char = plain_markdown.first
-    type = TOKEN_TYPES.fetch(char) { raise InvalidTokenTypeError }
-    Token.new(type: type, value: char)
-  rescue InvalidTokenTypeError
+    Token.new(type: TOKEN_TYPES[char], value: char)
+  rescue InvalidTokenError
     Token.null
   end
 end
-
-class InvalidTokenTypeError < Exception; end

@@ -21,12 +21,12 @@ class Tokenizer
     if plain_markdown.blank?
       []
     else
-      token = scan_token(plain_markdown)
+      token = scan_one_token(plain_markdown)
       [token] + tokenize(plain_markdown[token.length..-1])
     end
   end
 
-  def scan_token(plain_markdown)
+  def scan_one_token(plain_markdown)
     TOKEN_SCANNERS.each do |scanner|
       token = scanner.from_string(plain_markdown)
       return token unless token.null?

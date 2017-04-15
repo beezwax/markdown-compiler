@@ -5,6 +5,7 @@ class Token
   def initialize(type:, value:)
     @type = type
     @value = value
+    raise InvalidTokenError if value.nil? || type.nil?
   end
 
   def self.null
@@ -19,3 +20,5 @@ class Token
     false
   end
 end
+
+class InvalidTokenError < Exception; end
