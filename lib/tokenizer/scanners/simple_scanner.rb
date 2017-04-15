@@ -1,5 +1,4 @@
 require_relative '../tokens/token'
-require_relative '../tokens/null_token'
 
 # This class scans for a token based on a single character. If there are no
 # matches, it will return a NullToken.
@@ -23,7 +22,7 @@ class SimpleScanner
     type = TOKEN_TYPES.fetch(char) { raise InvalidTokenTypeError }
     Token.new(type: type, value: char)
   rescue InvalidTokenTypeError
-    NullToken.new
+    Token.null
   end
 end
 
