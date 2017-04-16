@@ -12,8 +12,7 @@ class TestParser < Minitest::Test
   end
 
   def test_simple
-    ast = parse('__Foo__ and text.')
-    binding.pry
+    ast = parse("__Foo__ and text.\n\nAnother para.")
     assert_equal true, true
   end
 end

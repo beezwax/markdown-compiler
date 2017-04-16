@@ -17,8 +17,8 @@ class TokenList
     true
   end
 
-  def peek_at(index, type)
-    return tokens[index].type == type
+  def peek_at(index, *types)
+    return offset(index).peek(*types)
   end
 
   def grab!(amount)
@@ -27,6 +27,7 @@ class TokenList
   end
 
   def offset(index)
+    return self if index.zero?
     TokenList.new(tokens[index..-1])
   end
 
@@ -36,5 +37,9 @@ class TokenList
 
   def third
     tokens[2]
+  end
+
+  def to_s
+    "[\n\t#{tokens.map(&:to_s).join(",\n\t")}\n]"
   end
 end

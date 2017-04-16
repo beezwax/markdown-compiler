@@ -26,6 +26,10 @@ class Token
   def null?
     false
   end
+
+  def to_s
+    "<type: #{type}, value: #{value}>"
+  end
 end
 
 class InvalidTokenError < RuntimeError; end
