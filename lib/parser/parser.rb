@@ -6,7 +6,7 @@ class Parser
   def parse(tokens)
     paragraphs = []
     while tokens.any?
-      parser = ParserFactory.build(:sentence_parser)
+      parser = ParserFactory.build(:paragraph_parser)
       if parser.is_match(tokens)
         raise "Expression matched but no tokens consumed" if parser.consumed.zero?
         paragraphs += [parser.node]

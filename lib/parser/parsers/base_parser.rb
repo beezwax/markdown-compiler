@@ -18,6 +18,8 @@ class BaseParser
     parsers.find { |p| try_parser(tokens, p) } || false
   end
 
+  # TODO: Return NulLNode instead of false? Maybe we can reuse parsers like that
+  # @consumed could live in the node itself.
   def try_parser(tokens, parser)
     return false unless parser.is_match(tokens)
     @node     = parser.node
@@ -27,6 +29,9 @@ class BaseParser
 
   private
 
+  # TODO: If we can reuse parsers, then this should be memoized:
+  # @parser_cache[name] ||= ParserFactory.build(...)
+  # That would work as long as we don't need any *args for the parsers.
   def method_missing(name, *args, &block)
     raise ArgumentError.new("Method #{name} does not exist.") unless name.to_s.end_with?('_parser')
     ParserFactory.build(name, *args, &block)

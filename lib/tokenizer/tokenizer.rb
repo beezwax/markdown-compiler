@@ -23,8 +23,8 @@ class Tokenizer
   private
 
   def tokenize_as_array(plain_markdown)
-    if plain_markdown.nil? ||plain_markdown == ''
-      []
+    if plain_markdown.nil? || plain_markdown == ''
+      [Token.end_of_file]
     else
       token = scan_one_token(plain_markdown)
       [token] + tokenize_as_array(plain_markdown[token.length..-1])

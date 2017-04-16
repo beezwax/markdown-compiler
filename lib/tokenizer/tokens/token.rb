@@ -15,6 +15,10 @@ class Token
     NullToken.new
   end
 
+  def self.end_of_file
+    Token.new(type: 'EOF', value: '')
+  end
+
   def length
     value.length
   end
