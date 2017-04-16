@@ -18,7 +18,7 @@ class SimpleScanner
   }.freeze
 
   def self.from_string(plain_markdown)
-    char = plain_markdown.first
+    char = plain_markdown[0]
     Token.new(type: TOKEN_TYPES[char], value: char)
   rescue InvalidTokenError
     Token.null

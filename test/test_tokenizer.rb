@@ -1,5 +1,4 @@
 require 'minitest/autorun'
-require 'active_support/core_ext/array'
 require 'pry'
 
 class TestTokenizer < Minitest::Test
