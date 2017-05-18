@@ -17,6 +17,6 @@ class Node
   end
 
   def self.null
-    NullNode.new
+    @@null_node ||= NullNode.new
   end
 end
