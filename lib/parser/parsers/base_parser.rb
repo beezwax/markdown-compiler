@@ -6,9 +6,9 @@ class BaseParser
   # If a parser matched, the function returns the matched node, otherwise, it
   # returns a null node.
   #
-  def match_one(tokens, *parsers)
+  def match_first(tokens, *parsers)
     parsers.each do |parser|
-      node = parser.is_match(tokens)
+      node = parser.match(tokens)
       return node if node.present?
     end
     Node.null

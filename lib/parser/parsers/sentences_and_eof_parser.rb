@@ -3,7 +3,7 @@ require_relative "concerns/matches_sentences"
 class SentencesAndEofParser < BaseParser
   include MatchesSentences
 
-  def is_match(tokens)
+  def match(tokens)
     nodes, consumed = match_sentences(tokens)
 
     return Node.null if nodes.empty?
@@ -17,5 +17,4 @@ class SentencesAndEofParser < BaseParser
 
     SentenceNode.new(sentences: nodes, consumed: consumed)
   end
-
 end

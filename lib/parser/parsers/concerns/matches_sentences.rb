@@ -8,7 +8,7 @@ module MatchesSentences
     parser        = sentence_parser
 
     while true
-      node = parser.is_match(tokens.offset(consumed))
+      node = parser.match(tokens.offset(consumed))
       break if node.null?
       matched_nodes += [node]
       consumed      += node.consumed

@@ -6,7 +6,7 @@ class Parser
   def parse(tokens)
     paragraphs = []
     while tokens.any?
-      node = paragraph_parser.is_match(tokens)
+      node = paragraph_parser.match(tokens)
       if node.present?
         raise "Expression matched but no tokens consumed" if node.consumed.zero?
         paragraphs += [node]
