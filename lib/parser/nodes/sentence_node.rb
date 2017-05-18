@@ -1,6 +1,15 @@
 class SentenceNode
-  attr_reader :sentences
-  def initialize(sentences)
+  attr_reader :sentences, :consumed
+  def initialize(sentences:, consumed:)
     @sentences = sentences
+    @consumed  = consumed
+  end
+
+  def present?
+    true
+  end
+
+  def null?
+    false
   end
 end

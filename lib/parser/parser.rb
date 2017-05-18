@@ -6,15 +6,21 @@ class Parser
   def parse(tokens)
     paragraphs = []
     while tokens.any?
-      parser = ParserFactory.build(:paragraph_parser)
-      if parser.is_match(tokens)
-        raise "Expression matched but no tokens consumed" if parser.consumed.zero?
-        paragraphs += [parser.node]
-        tokens.grab!(parser.consumed)
+      node = paragraph_parser.is_match(tokens)
+      if node.present?
+        raise "Expression matched but no tokens consumed" if node.consumed.zero?
+        paragraphs += [node]
+        tokens.grab!(node.consumed)
       else
         raise "Syntax error, invalid statement: #{tokens}"
       end
     end
     paragraphs
+  end
+
+  private
+
+  def paragraph_parser
+    @paragraph_parser ||= ParserFactory.build(:paragraph_parser)
   end
 end

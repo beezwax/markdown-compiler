@@ -5,6 +5,9 @@ translates markdown to HTML.
 The main purpose of this library is to explain basic compiler design techniques
 so it's not made to be fast, but easy to read and understand.
 
+For more information about the project, or if you are interested in learning how
+to write compilers from scratch, see the `doc` directory.
+
 ## Run Tests
 To run tests just run `rake`.
 
