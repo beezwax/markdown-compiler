@@ -19,6 +19,11 @@ class ParserFactory
 
   def self.build(name, *args, &block)
     parser = PARSERS.fetch(name.to_sym) { raise "Invalid parser name: #{name}" }
-    parser.new(*args, &block)
+    cache[parser] = parser.new(*args, &block) if cache[parser].nil?
+    cache[parser]
+  end
+
+  def self.cache
+    @@cache ||= {}
   end
 end
