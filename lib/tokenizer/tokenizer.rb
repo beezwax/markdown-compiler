@@ -16,18 +16,18 @@ class Tokenizer
   ].freeze
 
   def tokenize(plain_markdown)
-    tokens_array = tokenize_as_array(plain_markdown)
+    tokens_array = tokens_as_array(plain_markdown)
     TokenList.new(tokens_array)
   end
 
   private
 
-  def tokenize_as_array(plain_markdown)
+  def tokens_as_array(plain_markdown)
     if plain_markdown.nil? || plain_markdown == ''
       [Token.end_of_file]
     else
       token = scan_one_token(plain_markdown)
-      [token] + tokenize_as_array(plain_markdown[token.length..-1])
+      [token] + tokens_as_array(plain_markdown[token.length..-1])
     end
   end
 

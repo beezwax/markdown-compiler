@@ -1,55 +1,46 @@
 # Introduction
-This series intends to demythify compilers and smooth the steep learning curve
-associated with all that matter. I intend to show that the core concepts are
-quite simple, and every developer can understand them. What's more, the
-concepts you'll learn are a quite nice addition to your developer toolbox, I've
-had some pleasant surprises where I get to use them in places I never thought I
-would.
+Have you ever wanted to make your own programming language? Maybe a template
+engine? Or a markdown parser? If you have ever done any of those, you might have
+noticed it's not exactly easy to get started. There's a lot of concepts to
+digest before you get going. Because of that, lots of devs just give up.
 
-Until not so long ago, if you wanted to write a compiler you had to dive into
-several academy-oriented books, digest some 700-pages-long books in order to
-even attempt writing your first compiler.
+This series will show you how to make a compiler from scratch. The techniques
+displayed here are the basis for the the topics stated above, and many more!
 
-Nowadays, there are much better resources for beginners, this project intends to
-be one of them. Compilers are big, complicated beasts, but they all boil down to
-simple concepts. After years of development we now have a rather generic way of
-writing compilers. It's not the only way, but it works, it's used in several
-languages, and it's extensible.
-
-## What is a compiler?
-A compiler is just a black box which translates input in a given language to
-output in another language. The input and output languages can be anything.
-If you've been in the Javascript world for the past few years you might have
-seen something called _transpiler_. A transpiler is actually a compiler,
-it transforms, for example, _Coffeescript_ source code into _Javascript_ source
-code or _SASS_ into _CSS_. There are lots of compilers out there in the real
-world!
+## What exactly is a compiler anyways?
+Let's start from the beginning and define what a compiler is. A compiler is just
+a black box which translates input in a given language to output in another
+language. The input and output languages can be anything. If you've been in the
+Javascript world for the past few years you might have seen something called
+_transpiler_. A transpiler is actually a compiler, it transforms, for example,
+_Coffeescript_ source code into _Javascript_ source code or _SASS_ into _CSS_.
 
 It's important to note that compilers can't take any language as input, for
 example, with the techniques showed here, you cannot write an
-english-to-machine-code compiler. But for simple languages, we can. Once
+english-to-machine-code compiler. But for _simple_ languages, we can. Once
 we get into parsing we'll learn more about those kind of languages, for now,
 just know that every programming language you know can be an input language for
 a compiler.
 
 ## What we'll build
 To keep things simple, I decided to make a simple compiler which translates
-a subset of markdown to HTML. For the implementation language, I've chosen Ruby,
+a tiny subset of markdown to HTML. For the implementation language, I've chosen Ruby,
 a language we love at Beezwax. Because Ruby's focus on readability and programmer
 happiness, I think it's a great choice for us, as we don't care much about speed
-and optimizations, we just want the raw concepts in the simplest possible way.
+and optimizations, we just want the concepts in the simplest possible way.
 
 You'll learn about tokenization, parsing and code-emitting. Because I'll talk
 about compilers, I won't get into things like interpreters or optimizations. I
 just want to give the reader a solid base, so they can get a taste of this whole
 subject, and pursue their own more specific interests if they happen to like it.
 
-The things you can do are limitless! Make your own programming language, Virtual
-Machine, template engine, scripting language, type checker, syntax checker,
-synax highlighter, smart code renaming or autocomplete... The sky is the limit!
+Some of the things you might want to do afterwards are making your own
+programming language, Virtual Machine, template engine, scripting language, DSL,
+type checker, syntax checker, synax highlighter, smart code renaming,
+autocomplete... The sky is the limit!
 
 ## Overview of our compiler
-Our compiler, like most compilers, will consist of three steps. Well dive deep
+Our compiler, like most compilers, will consist of three steps. We'll dive deep
 into each step later on, but for now, let's just take a quick look at the whole
 process. The first step is transforming the input markdown string into a list of
 tokens.
@@ -63,15 +54,6 @@ tokens.
 A token is just a name for the basic building blocks of our language. For
 example an underscore, a times symbol, a new line or just some words. This will
 make things easier for us later on.
-
-move this to tokenizer.md ---v
-
-The tokens themselves depends on our input language, so they are not written
-in stone.
-
-For example, in Ruby, we could tokenize `a = 12` as `[<Identifier a>, <Equals>, <Number 12>]`. It doesn't really make sense to tokenize it as `[<Identifier a>, <Equals>, <Number 1>, <Number 2>]`.
-
-move this to tokenizer.md ---^
 
 Next, we take those tokens and pass them into a parser. That parser will give
 us an Abstract Syntax Tree, don't worry if you don't know what that is for now.
