@@ -10,10 +10,6 @@ class SimpleScanner
   TOKEN_TYPES = {
     '_'  => 'UNDERSCORE',
     '*'  => 'TIMES',
-    '('  => 'POPEN',
-    ')'  => 'PCLOSE',
-    '['  => 'BOPEN',
-    ']'  => 'BCLOSE',
     "\n" => 'NEWLINE'
   }.freeze
 
