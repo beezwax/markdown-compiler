@@ -164,5 +164,5 @@ when it's not matched by the `SimpleScanner`.
 And that's the gist of the Tokenizer! If you want to play around with it you
 should just `git clone git:/....` and play with it with your favorite editor.
 
-Try running the tests with `rake test test/test_tokenizer.rb`, try adding new
-characters to be recognized, like `(` and `)`.
+Try running the tests with `rake test test/test_tokenizer.rb`. Try adding new
+characters to be recognized, like `(`; `)`; `[`; `]`.
