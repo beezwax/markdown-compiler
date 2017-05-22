@@ -167,3 +167,10 @@ should just `git clone git:/....` and play with it with your favorite editor.
 
 Try running the tests with `rake test test/test_tokenizer.rb`. Try adding new
 characters to be recognized, like `(`; `)`; `[`; `]`.
+
+## You did it!
+If you've followed along, congrats! You've taken the first step towards writing
+a tiny compiler. For now, you can relax, pat yourself in the back and sip some
+coffee. Next time, we'll talk about the next step: _Parsing_. We'll learn about
+grammars, formal languages and Recursive Descent Parsers. Don't worry they are
+not as scary as they sound.
