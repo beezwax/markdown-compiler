@@ -1,7 +1,6 @@
 # Parsing
-Parsing is basically making sense of a bunch of tokens in certain order. For
-example, if we were to design a language where you can assign a variable like
-this:
+Parsing is basically making sense of a bunch of list of tokens. For example, if
+we were to design a language where you can assign a variable like this:
 
 ```
 foo = 1
