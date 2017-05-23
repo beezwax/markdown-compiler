@@ -1,10 +1,10 @@
-require_relative "concerns/matches_sentences"
+require_relative "concerns/matches_star"
 
 class SentencesAndEofParser < BaseParser
-  include MatchesSentences
+  include MatchesStar
 
   def match(tokens)
-    nodes, consumed = match_sentences(tokens)
+    nodes, consumed = match_star tokens, with: sentence_parser
 
     return Node.null if nodes.empty?
     if tokens.peek_at(consumed, 'EOF')

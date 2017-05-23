@@ -1,10 +1,10 @@
-require_relative "concerns/matches_sentences"
+require_relative "concerns/matches_star"
 
 class SentencesAndNewlineParser < BaseParser
-  include MatchesSentences
+  include MatchesStar
 
   def match(tokens)
-    nodes, consumed = match_sentences(tokens)
+    nodes, consumed = match_star tokens, with: sentence_parser
     return Node.null if nodes.empty?
     return Node.null unless tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE')
     consumed += 2 # consume newlines

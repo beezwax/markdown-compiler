@@ -95,7 +95,7 @@ We've got an infinite loop! The good news is that whatever grammar can be
 written with left recursion, [can be written as a different equivalent grammar
 without left recursion](http://www.csd.uwo.ca/~moreno/CS447/Lectures/Syntax.html/node8.html).
 
-Let's see a grammar a bit more useful. Consider this:
+Let's see another grammar, example:
 
 ```
 Assign     = Identifier EQUALS Number
@@ -127,7 +127,7 @@ Everything looks good! `foo = 1` was generated, so it belongs to our language
 ## On Abstract Syntax Trees
 Now, just some more theory before I let you go :) The whole point of the grammar
 is to get an Abstract Syntax Tree representation -- or AST for short, of our
-input. For example `hello __world__` would translate as:
+input. For example, a markdown grammar might parse `hello __world__` as:
 
 ```
                        [PARAGRAPH]
@@ -261,37 +261,27 @@ end
 
 You can see we return a null node if we could not match something, otherwise,
 we return a valid node. We call the result _node_ because we want to build an
-abstract syntax tree. For example, the tree representation of:
+abstract syntax tree.
 
-## Nerdy footnote
-Modern regex engines allow for things like positive lookaheads and references. 
-
-Some people might think we are over complicating things, they just want to use a
-regular expression to match things, it seems to work for our example right? But
-regular expressions can't match all formal languages, this means formal
-languages are more powerful than regular expressions. Wanna see why?
-
-A formal language is a language defined by a grammar rules.
-
-Try to match the regular expression `a^nba^n`, that is, match a the same times
-you match b. Eg: `aba`, `aabaa` and `aaabaaa` are all valid, but `aaba`, `ba`, `a`
-and `b` are all invalid.
-
-We can easily make a rule for it:
+Let's see a parser a bit more complicated:
 
 ```
-Foo = aba
-    | a Foo a
+class BoldParser < BaseParser
+  def match(tokens)
+    return Node.null unless tokens.peek('UNDERSCORE', 'UNDERSCORE', 'TEXT', 'UNDERSCORE', 'UNDERSCORE')
+    Node.new(type: 'BOLD', value: tokens.third.value, consumed: 5)
+  end
+end
 ```
 
-In this case, `a` and `b` are tokens representing themselves. The `|` means
-_or_, it will try the rules in the defined order until it matches, stopping at
-the first match.
+Once again, we just check the token sequence is valid and return a node. The
+emphasis parser is quite similar to this one. Let's take a look at the
+sentences:
 
-The same as there are regular expression engines, there are parser generators,
-which take a set of rules as an input and build a parser for you, which you can
-use to accept or reject strings.
-
-Because regular expressions are simpler and useful enough, every modern language
-packs a regular expressions library, but few languages have parser generators,
-as they cover a more specific problem.
+```
+class SentenceParser < BaseParser
+  def match(tokens)
+    match_first tokens, emphasis_parser, bold_parser, text_parser
+  end
+end
+```

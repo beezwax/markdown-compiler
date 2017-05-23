@@ -1,11 +1,12 @@
-module MatchesSentences
+module MatchesStar
   # This method tries to match a sentence as many times as possible. It then
-  # returns all matched nodes.
+  # returns all matched nodes. It's the equivalent of `*`, also known as Kleene
+  # star.
   #
-  def match_sentences(tokens)
+  def match_star(tokens, with:)
     matched_nodes = []
     consumed      = 0
-    parser        = sentence_parser
+    parser        = with
 
     while true
       node = parser.match(tokens.offset(consumed))
