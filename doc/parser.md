@@ -110,54 +110,19 @@ _WORD_ token to match `[a-z]+` and the _NUMBER_ token will match just [0-9].
 
 If we want to manually test this grammar, we can use the substitution model to
 try do it. All we have to do is replace rules with their body until all we have
-are terminals.
+are terminals. Let's say I want to match `foo = 1`. We must start from the
+initial rule and see if we can generate that:
 
 ```
-# I want to match "foo = 1". Always start from the initial rule.
 Assign = Identifier EQUALS Number
-Assign = WORD EQUALS NUMBER
-Assign = foo EQUALS NUMBER # foo is a valid workd token, we can replace it
-Assign = foo = NUMBER      # = is a valid equals token
-Assign = foo = 1           # 1 is a valid number token
+       = WORD EQUALS NUMBER
+       = foo EQUALS NUMBER # foo is a valid workd token, we can replace it
+       = foo = NUMBER      # = is a valid equals token
+       = foo = 1           # 1 is a valid number token
 ```
 
-Everything looks good! "foo = 1" was generated, so it belongs to our language,
-which looks something like `L = { 'a = 1', 'foo = 5', 'somelongword = 9', ...  }`.
-
-## A simple Markdown grammar
-Okay! Enough theory! We can now start talking. This is the grammar we'll
-implement:
-
-```
-Paragraph          := SentenceAndNewline
-                    | SentenceAndEOF
-
-SentenceAndNewline := Sentence+ NEWLINE NEWLINE
-
-SentencesAndEOF    := Sentence+ NEWLINE EOF
-                    | Sentence+ EOF
-
-Sentence           := EmphasizedText
-                    | BoldText
-                    | Text
-
-EmphasizedText     := UNDERSCORE BoldText UNDERSCORE
-
-BoldText           := UNDERSCORE UNDERSCORE TEXT UNDERSCORE UNDERSCORE
-                        | STAR STAR TEXT STAR STAR
-```
-
-As you can see, our tokens are pretty self-explanatory. If you remember from my
-previous post, `TEXT` is a token which matches anything but another token,
-basically. So it's some kind of _match-all_. 
-
-Our starting rule is the first one, `Paragraph`. A Paragraph is basically a set
-of sentences. 
-
-In our markdown language, a `Sentence` is not really a sentence in the english
-sense, where it's basically a bunch of words until a full stop. In our language,
-`__Hello__.  World` and `Some text. Some more text. Yet more text.` are single,
-valid sentences.
+Everything looks good! `foo = 1` was generated, so it belongs to our language
+`L = { 'a = 1', 'foo = 5', 'someverylongwordthisis = 9', ...  }`.
 
 ## On Abstract Syntax Trees
 Now, just some more theory before I let you go :) The whole point of the grammar
@@ -173,7 +138,6 @@ input. For example `hello __world__` would translate as:
                v             v              v
           [TEXT="hello "] [BOLD="world"] [TEXT="."]
 ```
-
 
 > __NOTE__ If you've never seen a tree data structure before, you might [want to
 > check that out](https://en.wikipedia.org/wiki/Tree_(data_structure)).
@@ -243,6 +207,41 @@ Number         = 0 | 1 | 2 | ... | 9
 As you can see, we explicitly set the order of the operations to be performed.
 The order in this case is Multiplication, Division, Adition, Substraction, like
 C. The generated AST will now always be the same.
+
+## A simple Markdown grammar
+Okay, enough theory! We can now start coding. This is the grammar we'll
+implement:
+
+```
+Paragraph          := SentenceAndNewline
+                    | SentenceAndEOF
+
+SentenceAndNewline := Sentence+ NEWLINE NEWLINE
+
+SentencesAndEOF    := Sentence+ NEWLINE EOF
+                    | Sentence+ EOF
+
+Sentence           := EmphasizedText
+                    | BoldText
+                    | Text
+
+EmphasizedText     := UNDERSCORE BoldText UNDERSCORE
+
+BoldText           := UNDERSCORE UNDERSCORE TEXT UNDERSCORE UNDERSCORE
+                        | STAR STAR TEXT STAR STAR
+```
+
+As you can see, our tokens are pretty self-explanatory. If you remember from my
+previous post, `TEXT` is a token which matches anything but another token,
+basically. So it's some kind of _match-all_. 
+
+Our starting rule is the first one, `Paragraph`. A Paragraph is basically a set
+of sentences. 
+
+In our markdown language, a `Sentence` is not really a sentence in the english
+sense, where it's basically a bunch of words until a full stop. In our language,
+`__Hello__.  World` and `Some text. Some more text. Yet more text.` are single,
+valid sentences.
 
 ## Implementation
 Enough theory, let's implement it! The approach we'll take is creating an object
