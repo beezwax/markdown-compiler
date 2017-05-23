@@ -166,12 +166,12 @@ Number   = 0 | 1 | 2 | ... | 9
 If we were to manually build an AST for `2 + 2 - 4`, we get
 
 ```
-   +------[START]------+
-   |          |        |
-   v          v        v
-[BINOP] [OPERATOR=-] [NUMBER=4]
-   |
-   |------------+----------+
+                 +------[START]------+
+                 |          |        |
+                 v          v        v
+              [BINOP] [OPERATOR=-] [NUMBER=4]
+                |
+   +------------+----------+
    |            |          |
    v            v          v
 [NUMBER=2] [OPERATOR=+] [NUMBER=2]
@@ -186,7 +186,7 @@ equally valid representation could be:
    v          v        v
 [NUMBER=2] [OPERATOR=+] [BINOP]
                            |
-   |------------+----------+
+   +------------+----------|
    |            |          |
    v            v          v
 [NUMBER=2] [OPERATOR=-] [NUMBER=4]
@@ -201,14 +201,13 @@ don't have ambiguity! Let's see how we would write this as a non left-recursive
 grammar:
 
 ```
-Start    = Binop
-Binop    = Minus
-Minus    = Adition "-" Binop
-Adition  = Division "+" Binop
-Division = Times "/" Binop
-Times    = Number "*" Binop
-Operator = + | - | * | /
-Number   = 0 | 1 | 2 | ... | 9
+Start          = Binop
+Binop          = Substraction
+Substraction   = Adition "-" Binop
+Adition        = Division "+" Binop
+Division       = Multiplication "/" Binop
+Multiplication = Number "*" Binop
+Number         = 0 | 1 | 2 | ... | 9
 ```
 
 As you can see, we explicitly set the order of the operations to be performed.
