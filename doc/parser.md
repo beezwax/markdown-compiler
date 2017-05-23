@@ -192,15 +192,19 @@ equally valid representation could be:
 [NUMBER=2] [OPERATOR=-] [NUMBER=4]
 ```
 
-So we end up with `2 + (2 - 4)`. Because we only use non left-recursive
-grammars, our grammars don't have ambiguity! Let's see how we would write this
-as a non left-recursive grammar:
+So we end up with `2 + (2 - 4)`. We have two possible ASTs to choose from. We
+only need one, but we want our programs to be deterministic, and always return
+the same AST for the same input. Looks like we'll have to make some choices.
+
+Luckly for us, because we only use non left-recursive grammars, our grammars
+don't have ambiguity! Let's see how we would write this as a non left-recursive
+grammar:
 
 ```
 Start    = Binop
-Binop    = Adition
-Adition  = Minus "+" Binop
-Minus    = Division "-" Binop
+Binop    = Minus
+Minus    = Adition "-" Binop
+Adition  = Division "+" Binop
 Division = Times "/" Binop
 Times    = Number "*" Binop
 Operator = + | - | * | /
@@ -208,6 +212,8 @@ Number   = 0 | 1 | 2 | ... | 9
 ```
 
 As you can see, we explicitly set the order of the operations to be performed.
+The order in this case is Multiplication, Division, Adition, Substraction, like
+C. The generated AST will now always be the same.
 
 ## Implementation
 Enough theory, let's implement it! The approach we'll take is creating an object
