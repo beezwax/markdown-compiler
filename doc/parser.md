@@ -129,8 +129,105 @@ We got an infinite loop! The good news is that whatever grammar can be written
 with left recursion, [can be written as a different equivalent grammar without
 left recursion](http://www.csd.uwo.ca/~moreno/CS447/Lectures/Syntax.html/node8.html).
 
+## On Abstract Syntax Trees
+Now, just some more theory before I let you go :) The whole point of the grammar
+is to get an Abstract Syntax Tree representation -- or AST for short, of our
+input. For example `hello __world__` would translate as:
+
+```
+                       [PARAGRAPH]
+                           |
+                           v
+               +-------[SENTENCES] ---------+
+               |             |              |
+               v             v              v
+          [TEXT="hello "] [BOLD="world"] [TEXT="."]
+```
+
+
+> __NOTE__ If you've never seen a tree data structure before, you might [want to
+> check that out](https://en.wikipedia.org/wiki/Tree_(data_structure)).
+
+Our parent node is PARAGRAPH. That node has a single child, SENTENCES, which in
+turn has 3 children nodes, TEXT, BOLD and another TEXT. The starting rule in our
+parser will be the top-most parent in our tree.
+
+The thing about getting a tree out of a grammar is that we can remove ambiguity.
+Consider the following grammar:
+
+```
+Start    = Binop
+Binop    = Binop Operator Binop
+         | Number
+Operator = + | - | * | /
+Number   = 0 | 1 | 2 | ... | 9
+```
+
+If we were to manually build an AST for `2 + 2 - 4`, we get
+
+```
+   +------[START]------+
+   |          |        |
+   v          v        v
+[BINOP] [OPERATOR=-] [NUMBER=4]
+   |
+   |------------+----------+
+   |            |          |
+   v            v          v
+[NUMBER=2] [OPERATOR=+] [NUMBER=2]
+```
+
+So as you can see, we end up matching `(2 + 2) - 4`. The problem, is that an
+equally valid representation could be:
+
+```
+   +------[START]------+
+   |          |        |
+   v          v        v
+[NUMBER=2] [OPERATOR=+] [BINOP]
+                           |
+   |------------+----------+
+   |            |          |
+   v            v          v
+[NUMBER=2] [OPERATOR=-] [NUMBER=4]
+```
+
+So we end up with `2 + (2 - 4)`. Because we only use non left-recursive
+grammars, our grammars don't have ambiguity! Let's see how we would write this
+as a non left-recursive grammar:
+
+```
+Start    = Binop
+Binop    = Adition
+Adition  = Minus "+" Binop
+Minus    = Division "-" Binop
+Division = Times "/" Binop
+Times    = Number "*" Binop
+Operator = + | - | * | /
+Number   = 0 | 1 | 2 | ... | 9
+```
+
+As you can see, we explicitly set the order of the operations to be performed.
+
 ## Implementation
-Enough theory, let's implement it.
+Enough theory, let's implement it! The approach we'll take is creating an object
+for each rule in the parser. That rule might as well call other objects,
+including itself, in order to either accept or reject a sequence of tokens.
+
+For example, the `TEXT` parser matches a single `TEXT` token. 
+
+```
+class TextParser < BaseParser
+  def match(tokens)
+    return Node.null unless tokens.peek('TEXT')
+    Node.new(type: 'TEXT', value: tokens.first.value, consumed: 1)
+  end
+end
+```
+
+You can see we return a null node if we could not match something, otherwise,
+we return a valid node. We call the result _node_ because we want to build an
+abstract syntax tree. For example, the tree representation of:
 
 ## Nerdy footnote
 Modern regex engines allow for things like positive lookaheads and references. 
