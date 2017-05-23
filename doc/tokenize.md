@@ -10,14 +10,14 @@ some examples of the things we will match:
 A paragraph __with__ some *text*
 ```
 
-Because we are only going to match paragaphs, emphasized text and bold text -- no links,
-lists, quotes, etc -- it makes sense to have the following tokens: `UNDERSCORE`;
+Because we are only going to match paragraphs, emphasized text and bold text — no links,
+lists, quotes, etc — it makes sense to have the following tokens: `UNDERSCORE`;
 `TIMES`; `NEWLINE`; `TEXT` and `EOF`.
 
 So, for example, for the input `_Hello*` our tokenizer should return
-`[UNDERSCORE, TEXT="Hello",  TIMES]`. Note that the tokenizer is quite simple,
-it doesn't care whether the syntax is valid or not, it just regognizes the
-bulding blocks.
+`[UNDERSCORE, TEXT="Hello", TIMES]`. Note that the tokenizer is quite simple.
+It doesn't care whether the syntax is valid or not; it just recognizes the
+building blocks.
 
 Let's start with a test to define what our Tokenizer should do. We'll use
 [Minitest](https://github.com/seattlerb/minitest) for the specs.
@@ -46,18 +46,18 @@ class TestTokenizer < Minitest::Test
 end
 ```
 
-There are many ways to write tokenizers, some use regular expressions, others
-prefer to do the comparison themselves. Our approach will be quite object
-oriented, as we are using Ruby for our example.
+There are many ways to write tokenizers. Some use regular expressions; others
+prefer to do the comparison themselves. Our approach will be quite object-oriented,
+as we are using Ruby for our example.
 
-The tests alredy gives us quite a lot of information about our API. We'll have a
+The tests already give us quite a lot of information about our API. We'll have a
 `Tokenizer` object, which takes a markdown input string and returns a list of
 `Token` objects, which have `type` and `value` attributes.
 
 We'll use some `Scanner` objects to find tokens. Basically, we'll register
-scanners, each one knows what tokens to match. Then, we run all the scanners
-though the text, and collect what they return. We'll stop when something could
-not be matched or everything has been consumed.
+scanners that each match specific tokens. Then we run the text through all the
+scanners and collect what they return. We'll stop when something could not be
+matched or everything has been consumed.
 
 ```ruby
 class Tokenizer
@@ -95,22 +95,21 @@ end
 The method of interest here is `scan_one_token`. It takes a plain markdown
 string and returns a single token, matching the first character of the input
 string. To do so, it iterates though the scanners, and if the token matched is
-not null -- meaning if it's valid -- it will return that token, otherwise, just
-keep trying scanners. We fail if we consume the whole array and returned
-nothing.
+not null — i.e., if it's valid — it will return that token. Otherwise, it will
+keep trying scanners. We fail if we consume the whole array and return nothing.
 
-The `tokens_as_array` method is a wrapper for our previous method, it'a a
-recursive function which basically calls `scan_one_token` until it cannot
-anymore because there's no more string to send, or the `scan_one_token` method
-raised an error. This method also appends an end of file token which will be
-used to mark the end of the token list.
+The `tokens_as_array` method is a wrapper for our previous method. It's a
+recursive function which basically calls `scan_one_token` until there's no more
+string to send, or the `scan_one_token` method raised an error. This method also
+appends an end-of-file token, which will be used to mark the end of the token
+list.
 
-The `TokenList` class itself is just a convenient wrapper around a collection so
-there's no much point to showing it here. Same for `Token`, it's just a data
+The `TokenList` class itself is just a convenient wrapper around a collection, so
+there's not much point showing it here. Same for `Token` — it's just a data
 object with two attributes, `type` and `value`.
 
-What's now left to show you are the scanners, here's the first one, it matches
-single characters, can't get simpler than this!
+What's now left to show you are the scanners. Here's the first one, which
+matches single characters — can't get simpler than this!
 
 ```ruby
 class SimpleScanner
@@ -131,14 +130,14 @@ end
 
 As you can see, all the work is performed in the `from_string` method. All
 scanners must implement this method. The method takes a plain markdown string as
-input and returns a single token, using some logic to figure whether it should
-match it or not. When matched, returns a valid token, otherwise, returns a "null
-token". Note that, a token knows when it's invalid, in this case when either the
-`type` or the `value` are empty, that's the `InvalidTokenError` we are catching.
+input and returns a single token, using some logic to determine whether it should
+match it or not. When matched, it returns a valid token. Otherwise, it returns a "null
+token". Note that a token knows when it's invalid — in this case when either the
+`type` or the `value` are empty — that's the `InvalidTokenError` we are catching.
 
-> __NOTE__ Null objects are an object oriented pattern which is used to get rid
+> __NOTE__ Null objects are an object-oriented pattern which is used to get rid
 > of unwanted `if` and avoid possible nil reference errors. If you've never
-> heard of this before, you might want to check out [this other blog post](https://blog.beezwax.net/2016/03/25/avoid-nil-checks-code-confidently-be-happy/)
+> heard of this before, you might want to check out [this other blog post](https://blog.beezwax.net/2016/03/25/avoid-nil-checks-code-confidently-be-happy/),
 which explains it.
 
 Now onto the other scanner, `TextScanner`. This one is a bit more complicated
@@ -158,7 +157,7 @@ class TextScanner < SimpleScanner
 end
 ```
 
-We take advantage of Ruby functional-like list processing to simply fetch as
+We take advantage of Ruby functional-style list processing to fetch as
 many valid characters from the string as we can. We consider a character _valid_
 when it's not matched by the `SimpleScanner`.
 
@@ -170,7 +169,7 @@ characters to be recognized, like `(`; `)`; `[`; `]`.
 
 ## You did it!
 If you've followed along, congrats! You've taken the first step towards writing
-a tiny compiler. For now, you can relax, pat yourself in the back and sip some
+a tiny compiler. For now, you can relax, pat yourself on the back and sip some
 coffee. Next time, we'll talk about the next step: _Parsing_. We'll learn about
-grammars, formal languages and Recursive Descent Parsers. Don't worry they are
+grammars, formal languages and Recursive Descent Parsers. Don't worry — they are
 not as scary as they sound.
