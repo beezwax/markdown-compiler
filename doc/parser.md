@@ -275,8 +275,9 @@ end
 ```
 
 Once again, we just check the token sequence is valid and return a node. The
-emphasis parser is quite similar to this one. Let's take a look at the
-sentences:
+emphasis parser is quite similar to this one. What about the sentences? Our
+rule was `Sentence := EmphasizedText | BoldText | Text`. Seems simple enough,
+we find one of the three possible rules.
 
 ```
 class SentenceParser < BaseParser
@@ -285,3 +286,55 @@ class SentenceParser < BaseParser
   end
 end
 ```
+
+`match_first` does just that, it will try the given parsers and return the first
+valid node it finds. The order of the parsers is very important as they get
+tested in the given order.
+
+Now, onto the next rule: `SentenceAndNewline := Sentence+ NEWLINE NEWLINE`.
+
+```ruby
+class SentencesAndNewlineParser < BaseParser
+  include MatchesStar
+
+  def match(tokens)
+    nodes, consumed = match_star tokens, with: sentence_parser
+    return Node.null if nodes.empty?
+    return Node.null unless tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE')
+    consumed += 2 # consume newlines
+
+    SentenceNode.new(sentences: nodes, consumed: consumed)
+  end
+end
+```
+
+As you might see, now instead of trying different parsers, we need to try one
+several times. We use a different function, `match_star` which lives on a
+concern:
+
+```
+module MatchesStar
+  # This method tries to match a sentence as many times as possible. It then
+  # returns all matched nodes. It's the equivalent of `*`, also known as Kleene
+  # star.
+  #
+  def match_star(tokens, with:)
+    matched_nodes = []
+    consumed      = 0
+    parser        = with
+
+    while true
+      node = parser.match(tokens.offset(consumed))
+      break if node.null?
+      matched_nodes += [node]
+      consumed      += node.consumed
+    end
+
+    [matched_nodes, consumed]
+  end
+end
+```
+
+The module implements something called _Kleene star_, which is just a fancy way
+of saying: "Find this 0 or more times". The equivalent of writing: 
+`MyRule = 'a'*`, which would generate `{ '', 'a', 'aa', 'aaa', ... }`.
