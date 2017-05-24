@@ -18,7 +18,7 @@ foo =     # nothing here!
 
 You can see we only accept a small numbers of tokens sequences. In fact, the
 accepted sequences must be carefully ordered in order to be valid. A common
-solution to this problem, -- matching sequences of characters, are regular
+solution to this problem, - matching sequences of characters, are regular
 expressions. A not-so-common solution is writing a Parser, implementing a
 grammar.
 
@@ -126,7 +126,7 @@ Everything looks good! `foo = 1` was generated, so it belongs to our language
 
 ## On Abstract Syntax Trees
 Now, just some more theory before I let you go :) The whole point of the grammar
-is to get an Abstract Syntax Tree representation -- or AST for short, of our
+is to get an Abstract Syntax Tree representation - or AST for short, of our
 input. For example, a markdown grammar might parse `hello __world__` as:
 
 ```
