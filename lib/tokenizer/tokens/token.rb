@@ -27,6 +27,10 @@ class Token
     false
   end
 
+  def present?
+    true
+  end
+
   def to_s
     "<type: #{type}, value: #{value}>"
   end
