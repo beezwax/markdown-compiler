@@ -2,57 +2,40 @@
 Let's start implementing! If you want the source code for the whole project, you
 can find it at <TODO: Public GitHub URL for the repo>.
 
-A tokenizer is just a black box which takes an input text and returns a list of
-tokens. Because we want to recognize just a part of markdown, let's start with
+The first step in our compiler process is _tokenizing_ - also called Lexical
+Analisys. Tokenizing is basically making sense of a bunch of characters by
+transforming them into Tokens. For example: `Hello_` could be transformed to
+`[<TEXT=HELLO>, <UNDERSCORE>]`, an array of plain old Ruby objects.
+
+Because we want to recognize just a part of markdown, let's start with
 some examples of the things we will match:
 
 ```
 A paragraph __with__ some *text*
 ```
 
-Because we are only going to match paragraphs, emphasized text and bold text — no links,
-lists, quotes, etc — it makes sense to have the following tokens: `UNDERSCORE`;
-`STAR`; `NEWLINE`; `TEXT` and `EOF`.
+As we are only going to match paragraphs, emphasized text and bold text — no
+links, lists, quotes, etc — it makes sense to have only the following tokens:
+`UNDERSCORE`; `STAR`; `NEWLINE`; `TEXT` and `EOF`.
 
 So, for example, for the input `_Hello*` our tokenizer should return
-`[UNDERSCORE, TEXT="Hello", STAR]`. Note that the tokenizer is quite simple.
-It doesn't care whether the syntax is valid or not; it just recognizes the
-building blocks.
+`[<UNDERSCORE>, <TEXT="Hello">, <STAR>]`.
 
-Let's start with a test to define what our Tokenizer should do. We'll use
+Let's start with a test which defines what our Tokenizer should do. We'll use
 [Minitest](https://github.com/seattlerb/minitest) for the specs.
 
-Please note that I won't share the full code in the code snippets, they are just
-to demonstrate a concept, see the <TODO: Github repo URL> for the full code.
+The full source code for the compiler lives in [GitHub](), you are encouraged to
+clone it and play with it. The snippets displayed here won't give you the whole
+picture of this particular compiler, they instead focus on explaining concepts
+so you can write your own.
 
-```ruby
-class TestTokenizer < Minitest::Test
-  def setup
-    @tokenizer = Tokenizer.new
-  end
+There is not a single way to write tokenizers. Each one is different, tailored
+to it's specific needs. In this series I'll use a rather simple, object oriented
+approach, as we are using Ruby for our implementation. Emphasis will be put on
+readability and simplicity over speed and performance.
 
-  def test_underscore
-    tokens = @tokenizer.tokenize('_Foo_')
-
-    assert_equal tokens.first.type, 'UNDERSCORE'
-    assert_equal tokens.first.value, '_'
-
-    assert_equal tokens.second.type, 'TEXT'
-    assert_equal tokens.second.value, 'Foo'
-
-    assert_equal tokens.third.type, 'UNDERSCORE'
-    assert_equal tokens.third.value, '_'
-  end
-end
-```
-
-There are many ways to write tokenizers. Some use regular expressions; others
-prefer to do the comparison themselves. Our approach will be quite object-oriented,
-as we are using Ruby for our example.
-
-The tests already give us quite a lot of information about our API. We'll have a
-`Tokenizer` object, which takes a markdown input string and returns a list of
-`Token` objects, which have `type` and `value` attributes.
+We'll build a `Tokenizer` object, which will take a markdown input string and
+return a list of `Token` objects, which have `type` and `value` attributes.
 
 We'll use some `Scanner` objects to find tokens. Basically, we'll register
 scanners that each match specific tokens. Then we run the text through all the

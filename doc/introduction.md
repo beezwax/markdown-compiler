@@ -55,9 +55,8 @@ A token is just a name for the basic building blocks of our language. For
 example an underscore, a times symbol, a new line or just some words. This will
 make things easier for us later on.
 
-Next, we take those tokens and pass them into a parser. That parser will give
-us an Abstract Syntax Tree, don't worry if you don't know what that is for now.
-It's just an object representing our tokens organized in certain way.
+Next, we take those tokens and pass them into a parser. That parser will give us
+a tree data-structure representing our tokens organized in certain way.
 
 ```
                                                +--------+
@@ -65,7 +64,7 @@ It's just an object representing our tokens organized in certain way.
                                                +--------+
 ```
 
-Finally, with an AST, we can generate the proper HTML:
+Finally, with our tree, we can generate the proper HTML:
 
 ```
                                           +---------+
@@ -88,6 +87,3 @@ easily swap some parts around, for example, change the code generator to emit,
 for example, RTF documents instead of HTML documents. We could also write a new
 Tokenizer and Parser for a different language, and as long as the returned
 Abstract Syntax Tree is in the same format, we can still generate proper HTML.
-
-TODO: Talk about regular expressions not matching everything, and why we need
-grammars. Eg: match `a^nba^n`.

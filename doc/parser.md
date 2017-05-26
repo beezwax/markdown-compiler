@@ -1,13 +1,23 @@
 # Parsing
-Parsing is basically making sense of a bunch of tokens. For example, if
-we were to design a language where you can assign a variable like this:
+Hello, and welcome to the second part of the Markdown Compiler series! In case
+you've missed it, [here's the first part]().
+
+In this part we'll talk about the second step in compiling: Parsing, or also
+known as Syntactic Analysis (Ooh, fancy).
+
+Remember tokenizing was making sence of a bunch of characters by transforming
+them into tokens? Well, Parsing is basically making sense of a bunch of tokens
+transforming them into a Tree data structure. 
+
+For example, say were to design a language where you can assign a variable
+like this:
 
 ```
 foo = 1
 ```
 
-We could say that assignment consist of some word, an equals sign, and a number.
-The following are _invalid_ assignments:
+We could establish that assignment are made of a word, an equals sign, and a
+number. The following are _invalid_ assignments:
 
 ```
 foo = bar # expects a number on the right hand side of the equation
