@@ -91,11 +91,14 @@ def my_rule
 end
 ```
 
-We've got an infinite loop! The good news is that whatever grammar can be
-written with left recursion, [can be written as a different equivalent grammar
-without left recursion](http://www.csd.uwo.ca/~moreno/CS447/Lectures/Syntax.html/node8.html).
+We've got an infinite loop! The good news is that all grammars with
+left-recursion [can be written as a different equivalent grammar
+without left-recursion](http://www.csd.uwo.ca/~moreno/CS447/Lectures/Syntax.html/node8.html).
+In the next section we'll convert a left-recursive grammar into a
+non-left-recursive one.
 
-Let's see another grammar, example:
+Just one more thing before we move on, I just want to show you how to to
+evaluate a grammar _by hand_. Let's this tiny grammar as an example:
 
 ```
 Assign     = Identifier EQUALS Number
@@ -108,10 +111,10 @@ In the grammar above, I want to match an Identifier rule, a token of type EQUALS
 some building blocks called Terminals or Tokens. In our code, we'll tell the
 _WORD_ token to match `[a-z]+` and the _NUMBER_ token will match just [0-9].
 
-If we want to manually test this grammar, we can use the substitution model to
-try do it. All we have to do is replace rules with their body until all we have
-are terminals. Let's say I want to match `foo = 1`. We must start from the
-initial rule and see if we can generate that:
+To try out this grammar, all we need to know is the substitution model. We just
+replace rules with their definition until all we have are terminals. Let's say I
+want to match `foo = 1`. We must start from the
+initial rule and see if we can get to that:
 
 ```
 Assign = Identifier EQUALS Number
@@ -121,8 +124,7 @@ Assign = Identifier EQUALS Number
        = foo = 1           # 1 is a valid number token
 ```
 
-Everything looks good! `foo = 1` was generated, so it belongs to our language
-`L = { 'a = 1', 'foo = 5', 'someverylongwordthisis = 9', ...  }`.
+Everything looks good! `foo = 1` was generated, so it belongs to our language.
 
 ## On Abstract Syntax Trees
 Now, just some more theory before I let you go :) The whole point of the grammar
@@ -160,10 +162,10 @@ Number   = 0 | 1 | 2 | ... | 9
 If we were to manually build an AST for `2 + 2 - 4`, we get
 
 ```
-                 +------[START]------+
-                 |          |        |
-                 v          v        v
-              [BINOP] [OPERATOR=-] [NUMBER=4]
+                +------[START]--------+
+                |         |           |
+                v         v           v
+             [BINOP] [OPERATOR=-] [NUMBER=4]
                 |
    +------------+----------+
    |            |          |
@@ -180,10 +182,10 @@ equally valid representation could be:
    v          v            v
 [NUMBER=2] [OPERATOR=+] [BINOP]
                            |
-   +------------+----------|
-   |            |          |
-   v            v          v
-[NUMBER=2] [OPERATOR=-] [NUMBER=4]
+              +------------+----------|
+              |            |          |
+              v            v          v
+           [NUMBER=2] [OPERATOR=-] [NUMBER=4]
 ```
 
 So we end up with `2 + (2 - 4)`. We have two possible ASTs to choose from. We
