@@ -4,23 +4,14 @@ require_relative 'parsers/parser_factory'
 #
 class Parser
   def parse(tokens)
-    paragraphs = []
-    while tokens.any?
-      node = paragraph_parser.match(tokens)
-      if node.present?
-        raise "Expression matched but no tokens consumed" if node.consumed.zero?
-        paragraphs += [node]
-        tokens.grab!(node.consumed)
-      else
-        raise "Syntax error, invalid statement: #{tokens}"
-      end
-    end
-    paragraphs
+    body = body_parser.match(tokens)
+    raise "Syntax error: #{tokens[body.consumed]}" unless tokens.count == body.consumed
+    body
   end
 
   private
 
-  def paragraph_parser
-    @paragraph_parser ||= ParserFactory.build(:paragraph_parser)
+  def body_parser
+    @body_parser ||= ParserFactory.build(:body_parser)
   end
 end

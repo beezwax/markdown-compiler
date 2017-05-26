@@ -1,10 +1,11 @@
-require_relative 'bold_parser'
-require_relative 'emphasis_parser'
-require_relative 'sentence_parser'
-require_relative 'text_parser'
-require_relative 'paragraph_parser'
-require_relative 'sentences_and_eof_parser'
-require_relative 'sentences_and_newline_parser'
+require_relative "bold_parser"
+require_relative "emphasis_parser"
+require_relative "sentence_parser"
+require_relative "text_parser"
+require_relative "paragraph_parser"
+require_relative "sentences_and_eof_parser"
+require_relative "sentences_and_newline_parser"
+require_relative "body_parser"
 
 class ParserFactory
   PARSERS = {
@@ -15,6 +16,7 @@ class ParserFactory
     paragraph_parser:             ParagraphParser,
     sentences_and_eof_parser:     SentencesAndNewlineParser,
     sentences_and_newline_parser: SentencesAndEofParser,
+    body_parser:                  BodyParser,
   }.freeze
 
   def self.build(name, *args, &block)

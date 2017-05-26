@@ -10,8 +10,16 @@ class TokenList
     tokens.each(&block)
   end
 
+  def peek_or(*choices)
+    choices.each do |tokens|
+      return true if peek(*tokens)
+    end
+    false
+  end
+
   def peek(*types)
     types.each_with_index do |type, index|
+      return false if tokens.empty?
       return false if type != tokens[index].type
     end
     true

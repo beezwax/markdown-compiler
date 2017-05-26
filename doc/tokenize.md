@@ -12,10 +12,10 @@ A paragraph __with__ some *text*
 
 Because we are only going to match paragraphs, emphasized text and bold text — no links,
 lists, quotes, etc — it makes sense to have the following tokens: `UNDERSCORE`;
-`TIMES`; `NEWLINE`; `TEXT` and `EOF`.
+`STAR`; `NEWLINE`; `TEXT` and `EOF`.
 
 So, for example, for the input `_Hello*` our tokenizer should return
-`[UNDERSCORE, TEXT="Hello", TIMES]`. Note that the tokenizer is quite simple.
+`[UNDERSCORE, TEXT="Hello", STAR]`. Note that the tokenizer is quite simple.
 It doesn't care whether the syntax is valid or not; it just recognizes the
 building blocks.
 
@@ -115,7 +115,7 @@ matches single characters — can't get simpler than this!
 class SimpleScanner
   TOKEN_TYPES = {
     '_'  => 'UNDERSCORE',
-    '*'  => 'TIMES',
+    '*'  => 'STAR',
     "\n" => 'NEWLINE'
   }.freeze
 

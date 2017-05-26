@@ -202,19 +202,26 @@ Binop          = Substraction
 Substraction   = Adition "-" Binop
 Adition        = Division "+" Binop
 Division       = Multiplication "/" Binop
-Multiplication = Number "*" Binop
+Multiplication = Number "\*" Binop
 Number         = 0 | 1 | 2 | ... | 9
 ```
 
-As you can see, we explicitly set the order of the operations to be performed.
-The order in this case is Multiplication, Division, Adition, Substraction, like
+As you can see, we explicitly set the order of the operations to be performed,
+which in this case is Multiplication, Division, Adition, Substraction, like
 C. The generated AST will now always be the same.
 
+This method of transforming a left-recursive grammar to a non-left-recursive
+grammar works for all cases, so once you've done one, you've done them all. [For
+more info on this, you might want to check this
+article](http://www.csd.uwo.ca/~moreno/CS447/Lectures/Syntax.html/node8.html).
+
 ## A simple Markdown grammar
-Okay, enough theory! We can now start coding. This is the grammar we'll
+Okay, enough theory, let's start coding already! This is the grammar we'll
 implement:
 
 ```
+Body               := Paragraph\*
+
 Paragraph          := SentenceAndNewline
                     | SentenceAndEOF
 
@@ -230,15 +237,17 @@ Sentence           := EmphasizedText
 EmphasizedText     := UNDERSCORE BoldText UNDERSCORE
 
 BoldText           := UNDERSCORE UNDERSCORE TEXT UNDERSCORE UNDERSCORE
-                        | STAR STAR TEXT STAR STAR
+                    | STAR STAR TEXT STAR STAR
+
+Text               := TEXT
 ```
 
-As you can see, our tokens are pretty self-explanatory. If you remember from my
-previous post, `TEXT` is a token which matches anything but another token,
-basically. So it's some kind of _match-all_. 
+Note that the `Text` rule seems quite silly. It's just so it makes the
+implementation easier, we could easily get rid of it and just replace it with
+`TEXT`.
 
-Our starting rule is the first one, `Paragraph`. A Paragraph is basically a set
-of sentences. 
+Our starting rule is `Paragraph`, which is made of one ore more `Sentence`
+rules.
 
 In our markdown language, a `Sentence` is not really a sentence in the english
 sense, where it's basically a bunch of words until a full stop. In our language,
@@ -246,9 +255,8 @@ sense, where it's basically a bunch of words until a full stop. In our language,
 valid sentences.
 
 ## Implementation
-Enough theory, let's implement it! The approach we'll take is creating an object
-for each rule in the parser. That rule might as well call other objects,
-including itself, in order to either accept or reject a sequence of tokens.
+The approach we'll take is creating an object for each rule in the parser. That
+rule might as well call other objects, including itself.
 
 For example, the `TEXT` parser matches a single `TEXT` token. 
 
@@ -270,16 +278,20 @@ Let's see a parser a bit more complicated:
 ```
 class BoldParser < BaseParser
   def match(tokens)
-    return Node.null unless tokens.peek('UNDERSCORE', 'UNDERSCORE', 'TEXT', 'UNDERSCORE', 'UNDERSCORE')
+    return Node.null unless tokens.peek_or(%w(UNDERSCORE UNDERSCORE TEXT UNDERSCORE UNDERSCORE), %w(STAR STAR TEXT STAR STAR))
     Node.new(type: 'BOLD', value: tokens.third.value, consumed: 5)
   end
 end
 ```
 
-Once again, we just check the token sequence is valid and return a node. The
-emphasis parser is quite similar to this one. What about the sentences? Our
-rule was `Sentence := EmphasizedText | BoldText | Text`. Seems simple enough,
-we find one of the three possible rules.
+Once again, we just check the token sequence is valid and return a node. The 
+`peek_or` method takes some arrays as arguments and tries those tokens one by
+one. It stops whenever it finds a match, returning true. 
+
+The emphasis parser is quite similar to this one, so let's move onto something
+more interesting, like the sentence parser. Our rule was `Sentence :=
+EmphasizedText | BoldText | Text`. Seems simple enough, we find one of the three
+possible rules.
 
 ```
 class SentenceParser < BaseParser

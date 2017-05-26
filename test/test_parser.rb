@@ -12,7 +12,7 @@ class TestParser < Minitest::Test
   end
 
   def test_simple
-    ast = parse("__Foo__ and text.\n\nAnother para.")
-    assert_equal true, true
+    body_node = parse("__Foo__ and *text*.\n\nAnother para.")
+    assert_equal body_node.consumed, 14
   end
 end

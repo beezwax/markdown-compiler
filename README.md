@@ -29,7 +29,9 @@ Pseudo-definition of the grammar parsed:
     EmphasizedText     := UNDERSCORE BoldText UNDERSCORE
 
     BoldText           := UNDERSCORE UNDERSCORE TEXT UNDERSCORE UNDERSCORE
-                        | TIMES TIMES TEXT TIMES TIMES
+                        | STAR STAR TEXT STAR STAR
+
+    Text               := TEXT
 
 This matches a subset of Markdown. All-caps terms are tokens, they are the
 lowest-level match, basically terminals.

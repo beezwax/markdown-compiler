@@ -9,7 +9,7 @@ require_relative '../tokens/token'
 class SimpleScanner
   TOKEN_TYPES = {
     '_'  => 'UNDERSCORE',
-    '*'  => 'TIMES',
+    '*'  => 'STAR',
     "\n" => 'NEWLINE'
   }.freeze
 
