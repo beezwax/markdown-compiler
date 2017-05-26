@@ -170,6 +170,6 @@ characters to be recognized, like `(`; `)`; `[`; `]`.
 ## You did it!
 If you've followed along, congrats! You've taken the first step towards writing
 a tiny compiler. For now, you can relax, pat yourself on the back and sip some
-coffee. Next time, we'll talk about the next step: _Parsing_. We'll learn about
-grammars, formal languages and Recursive Descent Parsers. Don't worry — they are
-not as scary as they sound.
+coffee. Next time, we'll talk about  _Parsing_. We'll learn about Grammars,
+formal languages and Abstract Syntax Trees. Don't worry — they are not as
+scary as they sound.

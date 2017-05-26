@@ -41,9 +41,21 @@ Start := 'a'
        | 'c'
 ```
 
-Here `'a'`, `'b'` and `'c'` are all terminals. `|` means _or_. The order in
-which the grammar tries the rules is not defined theorically, it just matches
-all possible variations. For example:
+Here `'a'`, `'b'` and `'c'` are all terminals. `|` means _or_. We'll also the
+_Kleene star_:
+
+    A := 'a'*
+
+Which basically means: Match this 0 or more times, so it will match the empty
+string, `a`, `aa`, `aaa` and so on. A very similar one is _Kleen plus_, which
+means: Match this 1 or more times.
+
+    B := 'b'+
+
+Will match `b`, `bb`, `bbb` and so on, but not the empty string.
+
+The order in which the grammar tries the rules is not defined theorically, it
+just matches all possible variations. For example:
 
 ```
 Start := 'ab' A
@@ -196,15 +208,13 @@ Luckly for us, because we only use non left-recursive grammars, our grammars
 don't have ambiguity! Let's see how we would write this as a non left-recursive
 grammar:
 
-```
-Start          = Binop
-Binop          = Substraction
-Substraction   = Adition "-" Binop
-Adition        = Division "+" Binop
-Division       = Multiplication "/" Binop
-Multiplication = Number "\*" Binop
-Number         = 0 | 1 | 2 | ... | 9
-```
+    Start          = Binop
+    Binop          = Substraction
+    Substraction   = Adition "-" Binop
+    Adition        = Division "+" Binop
+    Division       = Multiplication "/" Binop
+    Multiplication = Number "*" Binop
+    Number         = 0 | 1 | 2 | ... | 9
 
 As you can see, we explicitly set the order of the operations to be performed,
 which in this case is Multiplication, Division, Adition, Substraction, like
@@ -219,40 +229,34 @@ article](http://www.csd.uwo.ca/~moreno/CS447/Lectures/Syntax.html/node8.html).
 Okay, enough theory, let's start coding already! This is the grammar we'll
 implement:
 
-```
-Body               := Paragraph\*
+    Body               := Paragraph*
 
-Paragraph          := SentenceAndNewline
-                    | SentenceAndEOF
+    Paragraph          := SentenceAndNewline
+                        | SentenceAndEOF
 
-SentenceAndNewline := Sentence+ NEWLINE NEWLINE
+    SentenceAndNewline := Sentence+ NEWLINE NEWLINE
 
-SentencesAndEOF    := Sentence+ NEWLINE EOF
-                    | Sentence+ EOF
+    SentencesAndEOF    := Sentence+ NEWLINE EOF
+                        | Sentence+ EOF
 
-Sentence           := EmphasizedText
-                    | BoldText
-                    | Text
+    Sentence           := EmphasizedText
+                        | BoldText
+                        | Text
 
-EmphasizedText     := UNDERSCORE BoldText UNDERSCORE
+    EmphasizedText     := UNDERSCORE BoldText UNDERSCORE
 
-BoldText           := UNDERSCORE UNDERSCORE TEXT UNDERSCORE UNDERSCORE
-                    | STAR STAR TEXT STAR STAR
+    BoldText           := UNDERSCORE UNDERSCORE TEXT UNDERSCORE UNDERSCORE
+                        | STAR STAR TEXT STAR STAR
 
-Text               := TEXT
-```
+    Text               := TEXT
 
 Note that the `Text` rule seems quite silly. It's just so it makes the
 implementation easier, we could easily get rid of it and just replace it with
 `TEXT`.
 
-Our starting rule is `Paragraph`, which is made of one ore more `Sentence`
-rules.
-
-In our markdown language, a `Sentence` is not really a sentence in the english
-sense, where it's basically a bunch of words until a full stop. In our language,
-`__Hello__.  World` and `Some text. Some more text. Yet more text.` are single,
-valid sentences.
+Our starting rule is Body, which just matches 0 or more Paragraphs. Each
+paragraph is made of either a `SentenceAndNewline` rule or a `SentenceAndEOF`
+rule. A Sentence is just text, bold text, or emphasized text.
 
 ## Implementation
 The approach we'll take is creating an object for each rule in the parser. That
@@ -273,7 +277,7 @@ You can see we return a null node if we could not match something, otherwise,
 we return a valid node. We call the result _node_ because we want to build an
 abstract syntax tree.
 
-Let's see a parser a bit more complicated:
+Let's see a parser a bit more complicated, `__bold__ **text**`:
 
 ```
 class BoldParser < BaseParser
@@ -289,9 +293,9 @@ Once again, we just check the token sequence is valid and return a node. The
 one. It stops whenever it finds a match, returning true. 
 
 The emphasis parser is quite similar to this one, so let's move onto something
-more interesting, like the sentence parser. Our rule was `Sentence :=
-EmphasizedText | BoldText | Text`. Seems simple enough, we find one of the three
-possible rules.
+more interesting: The sentence parser. Our rule is `Sentence :=
+EmphasizedText | BoldText | Text`. Seems simple enough, `match_first` does the
+trick fos us:
 
 ```
 class SentenceParser < BaseParser
@@ -301,9 +305,8 @@ class SentenceParser < BaseParser
 end
 ```
 
-`match_first` does just that, it will try the given parsers and return the first
-valid node it finds. The order of the parsers is very important as they get
-tested in the given order.
+It will try the given parsers and return the first valid node it finds. The
+order of the parsers is very important as they get tested in the given order.
 
 Now, onto the next rule: `SentenceAndNewline := Sentence+ NEWLINE NEWLINE`.
 
@@ -322,33 +325,58 @@ class SentencesAndNewlineParser < BaseParser
 end
 ```
 
-As you might see, now instead of trying different parsers, we need to try one
-several times. We use a different function, `match_star` which lives on a
-concern:
+Similar to `match_one`, we now have another helper, `match_star`, which matches
+something 0 or more times. Because we are matching a `+`, we actually want to
+mach something once or more, so we error if we got nothing from our `match_star`
+method. Then we just match the two `NEWLINE` and return the node.
 
-```
-module MatchesStar
-  # This method tries to match a sentence as many times as possible. It then
-  # returns all matched nodes. It's the equivalent of `*`, also known as Kleene
-  # star.
-  #
-  def match_star(tokens, with:)
-    matched_nodes = []
-    consumed      = 0
-    parser        = with
+Our little helpers take away most of the job, as the remaining parsers are
+quite trivial. For example, this is our `Body` parser:
 
-    while true
-      node = parser.match(tokens.offset(consumed))
-      break if node.null?
-      matched_nodes += [node]
-      consumed      += node.consumed
+    class BodyParser < BaseParser
+      include MatchesStar
+
+      def match(tokens)
+        nodes, consumed = match_star tokens, with: paragraph_parser
+        return Node.null if nodes.empty?
+        BodyNode.new(paragraphs: nodes, consumed: consumed)
+      end
     end
 
-    [matched_nodes, consumed]
-  end
-end
-```
+Now what's missing is something to start calling up parsers, a simple `Parser`
+object which abstracts away all these stuff:
 
-The module implements something called _Kleene star_, which is just a fancy way
-of saying: "Find this 0 or more times". The equivalent of writing: 
-`MyRule = 'a'*`, which would generate `{ '', 'a', 'aa', 'aaa', ... }`.
+    class Parser
+      def parse(tokens)
+        body = body_parser.match(tokens)
+        raise "Syntax error: #{tokens[body.consumed]}" unless tokens.count == body.consumed
+        body
+      end
+
+      private
+
+      def body_parser
+        @body_parser ||= ParserFactory.build(:body_parser)
+      end
+    end
+
+# That's it!
+We've made it a long way so far. We can now transform 
+`__Foo__ and *bar*.\n\nAnother paragraph.` into a tree data structure:
+
+    => #<BodyNode:0x007fc774abe008
+     @consumed=14,
+     @paragraphs=
+      [#<SentenceNode:0x007fc774eb25d8
+        @consumed=12,
+        @sentences=
+         [#<Node:0x007fc774ea8150 @consumed=5, @type="BOLD", @value="Foo">,
+          #<Node:0x007fc774ac5f60 @consumed=1, @type="TEXT", @value=" and ">,
+          #<Node:0x007fc774ac6758 @consumed=3, @type="EMPHASIS", @value="bar">,
+          #<Node:0x007fc774eb33e8 @consumed=1, @type="TEXT", @value=".">]>,
+       #<SentenceNode:0x007fc774eb0828 @consumed=2, @sentences=[#<Node:0x007fc774eb1610 @consumed=1, @type="TEXT", @value="Another paragraph.">]>]>
+
+And that is no easy feat! We've talked a lot about parsers, grammars, tokens and
+all that stuff. More than enough to sip in for a day. Next time, we'll look at
+the final part of our compiler: The code generation layer. Hope you find this
+useful, and see you there!

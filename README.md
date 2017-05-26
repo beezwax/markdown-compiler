@@ -14,6 +14,8 @@ To run tests just run `rake`.
 ## Parsed Markdown Subset Grammar
 Pseudo-definition of the grammar parsed:
 
+    Body               := Paragraph*
+
     Paragraph          := SentenceAndNewline
                         | SentenceAndEOF
 
