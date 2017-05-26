@@ -194,7 +194,7 @@ equally valid representation could be:
    v          v            v
 [NUMBER=2] [OPERATOR=+] [BINOP]
                            |
-              +------------+----------|
+              +------------+----------+
               |            |          |
               v            v          v
            [NUMBER=2] [OPERATOR=-] [NUMBER=4]
