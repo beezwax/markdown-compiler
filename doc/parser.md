@@ -330,7 +330,7 @@ class SentencesAndNewlineParser < BaseParser
     return Node.null unless tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE')
     consumed += 2 # consume newlines
 
-    SentenceNode.new(sentences: nodes, consumed: consumed)
+    ParagraphNode.new(sentences: nodes, consumed: consumed)
   end
 end
 ```
@@ -377,14 +377,14 @@ We've made it a long way so far. We can now transform
     => #<BodyNode:0x007fc774abe008
      @consumed=14,
      @paragraphs=
-      [#<SentenceNode:0x007fc774eb25d8
+      [#<ParagraphNode:0x007fc774eb25d8
         @consumed=12,
         @sentences=
          [#<Node:0x007fc774ea8150 @consumed=5, @type="BOLD", @value="Foo">,
           #<Node:0x007fc774ac5f60 @consumed=1, @type="TEXT", @value=" and ">,
           #<Node:0x007fc774ac6758 @consumed=3, @type="EMPHASIS", @value="bar">,
           #<Node:0x007fc774eb33e8 @consumed=1, @type="TEXT", @value=".">]>,
-       #<SentenceNode:0x007fc774eb0828 @consumed=2, @sentences=[#<Node:0x007fc774eb1610 @consumed=1, @type="TEXT", @value="Another paragraph.">]>]>
+       #<ParagraphNode:0x007fc774eb0828 @consumed=2, @sentences=[#<Node:0x007fc774eb1610 @consumed=1, @type="TEXT", @value="Another paragraph.">]>]>
 
 And that is no easy feat! We've talked a lot about parsers, grammars, tokens and
 all that stuff. More than enough to sip in for a day. Next time, we'll look at

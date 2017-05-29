@@ -9,6 +9,6 @@ class SentencesAndNewlineParser < BaseParser
     return Node.null unless tokens.peek_at(consumed, 'NEWLINE', 'NEWLINE')
     consumed += 2 # consume newlines
 
-    SentenceNode.new(sentences: nodes, consumed: consumed)
+    ParagraphNode.new(sentences: nodes, consumed: consumed)
   end
 end

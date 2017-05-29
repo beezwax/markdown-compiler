@@ -15,6 +15,6 @@ class SentencesAndEofParser < BaseParser
       return Node.null
     end
 
-    SentenceNode.new(sentences: nodes, consumed: consumed)
+    ParagraphNode.new(sentences: nodes, consumed: consumed)
   end
 end

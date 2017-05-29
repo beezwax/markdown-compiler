@@ -1,4 +1,4 @@
-class SentenceNode
+class ParagraphNode
   attr_reader :sentences, :consumed
   def initialize(sentences:, consumed:)
     @sentences = sentences
