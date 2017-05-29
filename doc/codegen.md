@@ -50,8 +50,9 @@ visitor:
       end
     end
 
-Because a body is just a collection of paragraphs, we visit all paragraphs and
-join the result together. The `ParagraphVisitor` is a bit more interesting:
+Because `body_node` is just a collection of paragraphs, we visit all of them
+using `map` and join the result together, so we end up with a concatenated
+string. The `ParagraphVisitor` is a bit more interesting:
 
 
     class ParagraphVisitor
@@ -72,9 +73,10 @@ join the result together. The `ParagraphVisitor` is a bit more interesting:
       end
     end
 
-We finally add in some HTML! Because paragraphs are surrounded by `p` tags we
-wrap whatever it's inside with those tags. We defer the work to the
-`SentenceVisitor`:
+We are doing basically the same thing, the only difference is that we finally
+add in some HTML! Because paragraphs are surrounded by `p` tags we wrap whatever
+it's inside with those tags. We defer the work of translating what's inside the
+paragraph to the `SentenceVisitor`:
 
     class SentenceVisitor
       SENTENCE_VISITORS = {
@@ -142,13 +144,28 @@ everything works:
       end
     end
 
-If you've made it this far, congratulations! The cool thing about this is that
-you can write another generator for, say, XML, or ODT just by making a new
-generator. You could also re-think a new syntax for markdown, make a new parser
-and reuse the codegen layer to stll emit HTML.
+In that test, it's quite clear how everything works together, afterall all we
+are doing is just function composition: `generate(parse(tokenize("my input")))`.
+
+This is quite rough overall, we could make lots of improvements. For example, we
+could add a new object - `Markdown`, to abstract some of these things away,
+afterall, users of the API will prefer to just do `Markdown.to_html("_foo_")`,
+as they don't care how it works.
+
+    class Markdown
+      # ...
+      def self.to_html(input)
+        @generator.generate(@parser.parse(@tokenizer.tokenize(input)))
+      end
+      # ...
+    end
+
+The cool thing about this is that you can write another generator for, say, XML,
+or ODT just by making a new generator. You could also re-think a new syntax for
+markdown, make a new parser and reuse the codegen layer to stll emit HTML.
 
 It doesn't really matter if you dont understand __everything__ but having a
 birds eye view of a compiler is quite helpful. Hopefully these series will serve
 you as a solid base for any project requiring some of these skills, be it
-personal or for work. Remember the full source code [is at GitHub](), feel
-free to play around with it.
+personal or for work. Remember the full source code [is at GitHub](), feel free
+to play around with it.

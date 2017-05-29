@@ -1,4 +1,4 @@
-# Introduction
+# Markdown Compiler Part 1: Tokenizer
 Have you ever wanted to make your own programming language? Maybe a template
 engine? Or a markdown parser? If you have ever done any of those, you might have
 noticed it's not exactly easy to get started. There's a lot of concepts to

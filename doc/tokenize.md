@@ -1,4 +1,4 @@
-# The Tokenizer
+## The Tokenizer
 Let's start implementing! If you want the source code for the whole project, you
 can find it at <TODO: Public GitHub URL for the repo>.
 
