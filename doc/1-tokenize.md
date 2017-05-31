@@ -1,11 +1,9 @@
 ## The Tokenizer
-Let's start implementing! If you want the source code for the whole project, you
-can find it at <TODO: Public GitHub URL for the repo>.
-
-The first step in our compiler process is _tokenizing_ - also called Lexical
-Analisys. Tokenizing is basically making sense of a bunch of characters by
-transforming them into Tokens. For example: `Hello_` could be transformed to
-`[<TEXT=HELLO>, <UNDERSCORE>]`, an array of plain old Ruby objects.
+Let's start implementing! The first step in our compiler process is _tokenizing_
+- also called Lexical Analisys. Tokenizing is basically making sense of a bunch
+of characters by transforming them into Tokens. For example: `Hello_` could be
+transformed to `[<TEXT=HELLO>, <UNDERSCORE>]`, an array of plain old Ruby
+objects.
 
 Because we want to recognize just a part of markdown, let's start with some
 examples of the things we will match:
@@ -24,8 +22,9 @@ So, for example, for the input `_Hello*` our tokenizer should return
 Let's start with a test which defines what our Tokenizer should do. We'll use
 [Minitest](https://github.com/seattlerb/minitest) for the specs.
 
-The full source code for the compiler lives in [GitHub](), you are encouraged to
-clone it and play with it. The snippets displayed here won't give you the whole
+The full source code for the compiler lives in
+[GitHub](https://github.com/beezwax/markdown-compiler), you are encouraged to
+clone and play with it. The snippets displayed here won't give you the whole
 picture of this particular compiler, they instead focus on explaining concepts
 so you can write your own.
 
@@ -34,10 +33,11 @@ to it's specific needs. In this series I'll use a rather simple, object oriented
 approach, as we are using Ruby for our implementation. Emphasis will be put on
 readability and simplicity over speed and performance.
 
-We'll build a `Tokenizer` object, which will take a markdown input string and
-return a list of `Token` objects, which have `type` and `value` attributes.
+We'll start by building a `Tokenizer` object, which will take a markdown input
+string and return a list of `Token` objects, which have `type` and `value`
+attributes.
 
-We'll use some `Scanner` objects to find tokens. Basically, we'll register
+We'll then use some `Scanner` objects to find tokens. Basically, we'll register
 scanners that each match specific tokens. Then we run the text through all the
 scanners and collect what they return. We'll stop when something could not be
 matched or everything has been consumed.

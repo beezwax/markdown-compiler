@@ -274,7 +274,7 @@ rule might as well call other objects, including itself.
 
 For example, the `TEXT` parser matches a single `TEXT` token. 
 
-```
+```ruby
 class TextParser < BaseParser
   def match(tokens)
     return Node.null unless tokens.peek('TEXT')
@@ -289,7 +289,7 @@ abstract syntax tree.
 
 Let's see a parser a bit more complicated, `__bold__ **text**`:
 
-```
+```ruby
 class BoldParser < BaseParser
   def match(tokens)
     return Node.null unless tokens.peek_or(%w(UNDERSCORE UNDERSCORE TEXT UNDERSCORE UNDERSCORE), %w(STAR STAR TEXT STAR STAR))
@@ -307,7 +307,7 @@ more interesting: The sentence parser. Our rule is `Sentence :=
 EmphasizedText | BoldText | Text`. Seems simple enough, `match_first` does the
 trick fos us:
 
-```
+```ruby
 class SentenceParser < BaseParser
   def match(tokens)
     match_first tokens, emphasis_parser, bold_parser, text_parser
@@ -343,32 +343,36 @@ method. Then we just match the two `NEWLINE` and return the node.
 Our little helpers take away most of the job, as the remaining parsers are
 quite trivial. For example, this is our `Body` parser:
 
-    class BodyParser < BaseParser
-      include MatchesStar
+```ruby
+class BodyParser < BaseParser
+  include MatchesStar
 
-      def match(tokens)
-        nodes, consumed = match_star tokens, with: paragraph_parser
-        return Node.null if nodes.empty?
-        BodyNode.new(paragraphs: nodes, consumed: consumed)
-      end
-    end
+  def match(tokens)
+    nodes, consumed = match_star tokens, with: paragraph_parser
+    return Node.null if nodes.empty?
+    BodyNode.new(paragraphs: nodes, consumed: consumed)
+  end
+end
+```
 
 Now what's missing is something to start calling up parsers, a simple `Parser`
 object which abstracts away all these stuff:
 
-    class Parser
-      def parse(tokens)
-        body = body_parser.match(tokens)
-        raise "Syntax error: #{tokens[body.consumed]}" unless tokens.count == body.consumed
-        body
-      end
+```ruby
+class Parser
+  def parse(tokens)
+    body = body_parser.match(tokens)
+    raise "Syntax error: #{tokens[body.consumed]}" unless tokens.count == body.consumed
+    body
+  end
 
-      private
+  private
 
-      def body_parser
-        @body_parser ||= ParserFactory.build(:body_parser)
-      end
-    end
+  def body_parser
+    @body_parser ||= ParserFactory.build(:body_parser)
+  end
+end
+```
 
 # That's it!
 We've made it a long way so far. We can now transform 

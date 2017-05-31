@@ -28,10 +28,11 @@ tiny subset of markdown to HTML. Here's an example:
 
     Markdown.to_html('_Foo_ **bar**') # => "<em>Foo<em> <strong>bar<strong>"
 
-For the implementation language, I've chosen Ruby, a language we love at
-Beezwax. Because Ruby's focus on readability and programmer happiness, I think
-it's a great choice for us, as we don't care much about speed and optimizations,
-we just want the concepts in the simplest possible way.
+As you can see, we put in markdown, and get back HTML. For the implementation
+language, I've chosen Ruby, a language we love at Beezwax. Because Ruby's focus
+on readability and programmer happiness, I think it's a great choice for us, as
+we don't care much about speed and optimizations, we just want the concepts in
+the simplest possible way.
 
 You'll learn about tokenization, parsing and code-generation. Because I'll talk
 about compilers, I won't get into things like interpreters or optimizations. I
