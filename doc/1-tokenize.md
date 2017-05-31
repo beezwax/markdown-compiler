@@ -7,8 +7,8 @@ Analisys. Tokenizing is basically making sense of a bunch of characters by
 transforming them into Tokens. For example: `Hello_` could be transformed to
 `[<TEXT=HELLO>, <UNDERSCORE>]`, an array of plain old Ruby objects.
 
-Because we want to recognize just a part of markdown, let's start with
-some examples of the things we will match:
+Because we want to recognize just a part of markdown, let's start with some
+examples of the things we will match:
 
 ```
 A paragraph __with__ some *text*

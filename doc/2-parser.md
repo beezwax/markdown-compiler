@@ -1,4 +1,4 @@
-# Markdown Compiler Part 2: Parsing
+# Writing a Markdown Compiler Part 2: Parsing
 Hello, and welcome to the second part of the Markdown Compiler series! In case
 you've missed it, [here's the first part]().
 

@@ -1,8 +1,8 @@
-# Markdown Compiler Part 1: Tokenizer
+# Writing a Markdown Compiler
 Have you ever wanted to make your own programming language? Maybe a template
-engine? Or a markdown parser? If you have ever done any of those, you might have
-noticed it's not exactly easy to get started. There's a lot of concepts to
-digest before you get going. Because of that, lots of devs just give up.
+engine? Or a markdown parser? If you have ever built any of those, you might
+have noticed it's not exactly easy to get started. There's a lot of concepts to
+digest before you get going. That's why lots of devs just give up.
 
 This series will show you how to make a compiler from scratch. The techniques
 displayed here are the basis for the the topics stated above, and many more!
@@ -17,25 +17,29 @@ _Coffeescript_ source code into _Javascript_ source code or _SASS_ into _CSS_.
 
 It's important to note that compilers can't take any language as input, for
 example, with the techniques showed here, you cannot write an
-english-to-machine-code compiler. But for _simple_ languages, we can. Once
-we get into parsing we'll learn more about those kind of languages, for now,
-just know that every programming language you know can be an input language for
-a compiler.
+english-to-machine-code compiler. But for _simple_ languages, we can. Once we
+get into parsing we'll learn more about those kind of languages, for now, just
+know that every programming language you know can be an input language for a
+compiler.
 
 ## What we'll build
-To keep things simple, I decided to make a simple compiler which translates
-a tiny subset of markdown to HTML. For the implementation language, I've chosen Ruby,
-a language we love at Beezwax. Because Ruby's focus on readability and programmer
-happiness, I think it's a great choice for us, as we don't care much about speed
-and optimizations, we just want the concepts in the simplest possible way.
+To keep things simple, I decided to make a simple compiler which translates a
+tiny subset of markdown to HTML. Here's an example:
 
-You'll learn about tokenization, parsing and code-emitting. Because I'll talk
+    Markdown.to_html('_Foo_ **bar**') # => "<em>Foo<em> <strong>bar<strong>"
+
+For the implementation language, I've chosen Ruby, a language we love at
+Beezwax. Because Ruby's focus on readability and programmer happiness, I think
+it's a great choice for us, as we don't care much about speed and optimizations,
+we just want the concepts in the simplest possible way.
+
+You'll learn about tokenization, parsing and code-generation. Because I'll talk
 about compilers, I won't get into things like interpreters or optimizations. I
 just want to give the reader a solid base, so they can get a taste of this whole
 subject, and pursue their own more specific interests if they happen to like it.
 
 Some of the things you might want to do afterwards are making your own
-programming language, Virtual Machine, template engine, scripting language, DSL,
+programming language, virtual machine, template engine, scripting language, DSL,
 type checker, syntax checker, synax highlighter, smart code renaming,
 autocomplete... The sky is the limit!
 

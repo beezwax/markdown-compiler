@@ -1,4 +1,4 @@
-# Markdown Compiler Part 3: Code Generation
+# Writing a Markdown Compiler Part 3: Code Generation
 Welcome to the final part of these series on writing a markdown compiler! If you
 have made it this far, congratulations! The last step is quite simple in this
 case, you'll have your very own markdown subset compiler in no time.
