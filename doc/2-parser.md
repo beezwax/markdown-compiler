@@ -146,12 +146,12 @@ Assign = Identifier EQUALS Number
        = foo = 1           # 1 is a valid number token
 ```
 
-Everything looks good! `foo = 1` was generated, so it belongs to our language.
+We were able to get to `foo = 1`, so it belongs to our language.
 
 ## On Abstract Syntax Trees
 Now, just some more theory before I let you go :) The whole point of the grammar
 is to get an Abstract Syntax Tree representation - or AST for short, of our
-input. For example, a markdown grammar might parse `hello __world__` as:
+input. For example, a markdown grammar might parse `hello __world__.` as:
 
 ```
                        [PARAGRAPH]
@@ -300,7 +300,8 @@ end
 
 Once again, we just check the token sequence is valid and return a node. The 
 `peek_or` method takes some arrays as arguments and tries those tokens one by
-one. It stops whenever it finds a match, returning true. 
+one. `peek_or` stops whenever it finds a match, returning true, otherwise it 
+returns false.
 
 The emphasis parser is quite similar to this one, so let's move onto something
 more interesting: The sentence parser. Our rule is `Sentence :=
