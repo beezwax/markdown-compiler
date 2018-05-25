@@ -16,6 +16,6 @@ class SentenceVisitor
   private
 
   def visitor_for(node)
-    SENTENCE_VISITORS.fetch(node.type).new { raise "Invalid sentence node type" }
+    SENTENCE_VISITORS.fetch(node.type) { raise "Invalid sentence node type" }.new 
   end
 end
