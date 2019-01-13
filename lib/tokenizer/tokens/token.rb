@@ -12,7 +12,7 @@ class Token
   end
 
   def self.null
-    @@null_token ||= NullToken.new
+    NullToken.new
   end
 
   def self.end_of_file
